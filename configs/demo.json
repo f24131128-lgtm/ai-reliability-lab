@@ -6,7 +6,8 @@
     "day03": "data/demo/day03_results.csv",
     "day04": "data/demo/day04_format_cases.csv",
     "day05": "data/demo/day05_abstention_cases.csv",
-    "day06": "data/demo/day06_risk_coverage.csv"
+    "day06": "data/demo/day06_risk_coverage.csv",
+    "day07": "data/demo/day07_calibration.csv"
   },
   "day01_mock_outputs": {
     "Q001": "5",

@@ -58,3 +58,25 @@ def day06_record(row: dict[str, Any]) -> EvaluationRecord:
         case_id=str(row["case_id"]), response="", confidence=float(row["confidence"]),
         is_correct=raw_correct == "1", metadata={"confidence_source": "synthetic_demo"},
     )
+
+
+def day07_record(row: dict[str, Any], run_id: str) -> EvaluationRecord:
+    raw_confidence = str(row["confidence"]).strip()
+    try:
+        confidence = float(raw_confidence)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Day 7 confidence must be numeric: {row['case_id']}") from exc
+    if not 0.0 <= confidence <= 1.0:
+        raise ValueError(f"Day 7 confidence must be within [0, 1]: {row['case_id']}")
+    raw_correct = str(row["correct"]).strip()
+    if raw_correct not in {"0", "1"}:
+        raise ValueError(f"Day 7 correct must be exactly 0 or 1: {row['case_id']}")
+    return EvaluationRecord(
+        case_id=str(row["case_id"]), run_id=run_id, response="",
+        confidence=confidence, is_correct=raw_correct == "1",
+        metadata={
+            "scenario": str(row["scenario"]),
+            "data_classification": str(row.get("data_classification", "synthetic_demo")),
+            "confidence_source": "synthetic_demo",
+        },
+    )

@@ -12,6 +12,7 @@ AI Reliability Lab 是一個以 Python 建立的 30 天 AI Engineering 實驗專
 - Day 4：strict JSON format compliance 與 format quality gate
 - Day 5 revised：correct abstention、unsafe answer、over-refusal、coverage、selective accuracy
 - Day 6：以資料中實際 confidence thresholds 計算 risk–coverage points
+- Day 7：controlled synthetic calibration、Brier Score、ECE、reliability-bin data
 
 ## Project structure
 
@@ -52,7 +53,9 @@ python -m ai_reliability.cli gate --mode demo --run-id <run_id>
 
 ## Demo data versus real experiments
 
-`data/demo/` is synthetic and exists to reproduce the Day 1–Day 6 examples. Its outputs are not measurements of a real model. Demo metadata and risk-coverage output explicitly carry this limitation; demo confidence is synthetic demonstration confidence, not calibrated LLM confidence.
+`data/demo/` is synthetic and exists to reproduce the Day 1–Day 7 examples. Its outputs are not measurements of a real model. Day 7 uses two controlled scenarios with identical correctness labels and overall accuracy: one with confidence aligned to observed group accuracy, and one deliberately overconfident. This is an experiment about calibration behavior, not a claim about a real LLM. Demo metadata, calibration metrics, and risk-coverage output explicitly carry this limitation; demo confidence is synthetic demonstration confidence, not calibrated LLM confidence.
+
+Calibration asks whether a stated probability corresponds to the observed correctness frequency. Day 7 reports accuracy, mean confidence, signed mean confidence gap, Brier Score, Expected Calibration Error (ECE), and structured reliability-bin data. ECE depends on the chosen binning policy and sample size. Brier Score is useful as a probabilistic scoring rule, but is not a pure calibration-only metric. No calibration Quality Gate threshold is selected yet.
 
 `data/real/public/` is reserved for anonymized real evidence that may be committed. `data/real/raw/` is reserved for sensitive raw outputs and is ignored by Git. No API integration or API key is needed by Foundation v1.
 
@@ -62,6 +65,6 @@ The gate consumes already-produced metrics; it never silently recomputes them. M
 
 ## Roadmap
 
-Future directions are calibration, groundedness, hallucination analysis, prompt robustness, regression tests, cost/latency, judge reliability, benchmark reliability, dashboards, and case viewing. They are intentionally not scaffolded as empty modules in this release.
+Future directions are groundedness, hallucination analysis, prompt robustness, regression tests, cost/latency, judge reliability, benchmark reliability, dashboards, and case viewing. They are intentionally not scaffolded as empty modules in this release.
 
 The original Day 1–Day 6 articles remain unchanged under `legacy_day01_06/`. Canonical article migration is a separate follow-up.

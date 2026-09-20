@@ -6,6 +6,15 @@ The legacy bundle under `legacy_day01_06/` is the historical source of truth. Ne
 
 Day-specific loaders convert different CSV/JSONL inputs into a shared `EvaluationRecord`. They do not force one raw input schema onto every day. Metrics return `MetricResult`, and artifacts are plain JSON/JSONL for inspection.
 
+Normalization policies are intentionally day-specific:
+
+- Day 1: strip and collapse whitespace; case and punctuation remain significant.
+- Day 2: lowercase, remove whitespace, and remove the legacy punctuation set, including backtick. Raw outputs whose `strip()` is empty are excluded; punctuation-only raw outputs remain in the denominator. Unique Ratio and Mode Agreement use normalized outputs, while Pairwise Jaccard tokenizes raw non-empty outputs after lowercasing.
+- Day 3: lowercase, strip, and collapse whitespace. For each `question_id`, the expected answer is taken from the first row and used for every actual in that group. Consistency remains Mode Agreement, with the demo engineering threshold `0.8`, inclusive high boundary, and macro averages.
+- Day 5: lowercase, strip, and collapse whitespace. `UNKNOWN` is normalized exact abstention, and `answerable` uses `strip().lower() == "no"`.
+
+Day 7 calibration is a controlled synthetic experiment. Confidence represents an estimated probability that an answer is correct, not real-model calibrated confidence. The metric reports accuracy, mean confidence, signed confidence gap (`mean_confidence - accuracy`), Brier Score, ECE, and reliability-bin data. ECE uses configurable equal-width bins and the deterministic boundary `min(int(confidence * n_bins), n_bins - 1)`; empty bins are emitted with null summary values. Brier Score is a probabilistic scoring rule, not a calibration-only metric. ECE is sensitive to binning and sample size. No Day 7 Quality Gate threshold is currently defined.
+
 Intentional hardening in the refactor:
 
 - Empty inputs return a safe zero plus a warning instead of raising `ZeroDivisionError`.

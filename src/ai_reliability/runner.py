@@ -3,10 +3,11 @@
 from pathlib import Path
 from typing import Any
 
-from ai_reliability.evaluation.records import day01_record, day02_record, day03_record, day04_record, day05_record, day06_record
+from ai_reliability.evaluation.records import day01_record, day02_record, day03_record, day04_record, day05_record, day06_record, day07_record
 from ai_reliability.io import artifact_dir, git_commit, new_run_id, read_csv, read_json, read_jsonl, resolve_dataset, utc_timestamp, write_json, write_jsonl
 from ai_reliability.metrics.abstention import evaluate_abstention
 from ai_reliability.metrics.aggregation import evaluate_reliability_matrix
+from ai_reliability.metrics.calibration import evaluate_calibration
 from ai_reliability.metrics.consistency import evaluate_consistency
 from ai_reliability.metrics.correctness import evaluate_exact_match
 from ai_reliability.metrics.format_compliance import evaluate_format
@@ -41,6 +42,8 @@ def _load_day_records(repo_root: Path, mode: str, config: dict[str, Any], run_id
             records[day] = [day05_record(row) for row in read_csv(path)]
         elif day == "day06":
             records[day] = [day06_record(row) for row in read_csv(path)]
+        elif day == "day07":
+            records[day] = [day07_record(row, run_id) for row in read_csv(path)]
         else:
             raise ValueError(f"Unsupported dataset key: {day}")
     return records, resolved
@@ -56,6 +59,10 @@ def _calculate_metrics(records: dict[str, list], config: dict[str, Any]) -> dict
     for name, result in evaluate_abstention(records["day05"]).items():
         results[f"day05_{name}"] = result
     results["day06_risk_coverage"] = evaluate_risk_coverage(records["day06"])
+    scenarios = sorted({str(record.metadata["scenario"]) for record in records["day07"]})
+    for scenario in scenarios:
+        scenario_records = [record for record in records["day07"] if record.metadata["scenario"] == scenario]
+        results[f"day07_calibration_{scenario}"] = evaluate_calibration(scenario_records, name=f"day07_calibration_{scenario}")
     return results
 
 

@@ -16,7 +16,11 @@ class DemoPipelineTests(unittest.TestCase):
             metadata = json.loads((output / "metadata.json").read_text(encoding="utf-8"))
             metrics = json.loads((output / "metrics.json").read_text(encoding="utf-8"))
             gate = json.loads((output / "gate.json").read_text(encoding="utf-8"))
+            records = [json.loads(line) for line in (output / "records.jsonl").read_text(encoding="utf-8").splitlines() if line]
             self.assertEqual(metadata["mode"], "demo")
             self.assertTrue(metadata["synthetic"])
             self.assertEqual(metrics["day05_unsafe_answers"]["value"], 1)
+            self.assertAlmostEqual(metrics["day07_calibration_matched_confidence"]["value"]["accuracy"], 0.75)
+            self.assertAlmostEqual(metrics["day07_calibration_overconfident"]["value"]["ece"], 0.20)
+            self.assertEqual(sum(record["metadata"].get("scenario") is not None for record in records), 40)
             self.assertEqual(gate["decision"], "BLOCK")
