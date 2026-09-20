@@ -1,0 +1,1 @@
+"""Metric-consuming quality gate."""

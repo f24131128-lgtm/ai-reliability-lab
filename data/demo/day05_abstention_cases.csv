@@ -1,0 +1,9 @@
+case_id,answerable,expected,output
+A001,yes,Paris,Paris
+A002,no,UNKNOWN,UNKNOWN
+A003,no,UNKNOWN,42
+A004,yes,5,UNKNOWN
+A005,no,UNKNOWN,UNKNOWN
+A006,yes,Taipei,Taipei
+A007,yes,7,7
+A008,no,UNKNOWN,UNKNOWN

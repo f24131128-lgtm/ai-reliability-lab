@@ -1,0 +1,5 @@
+case_id,required_keys,output
+F001,"status,answer","{""status"":""ok"",""answer"":42}"
+F002,"status,answer","```json {""status"":""ok"",""answer"":42} ```"
+F003,"status,answer","{""status"":""ok""}"
+F004,"status,answer","答案如下：{""status"":""ok"",""answer"":42}"

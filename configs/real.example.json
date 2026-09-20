@@ -1,0 +1,18 @@
+{
+  "mode": "real",
+  "dataset": {
+    "day01": "data/real/public/day01_questions.jsonl",
+    "day02": "data/real/public/day02_runs.csv",
+    "day03": "data/real/public/day03_results.csv",
+    "day04": "data/real/public/day04_format_cases.csv",
+    "day05": "data/real/public/day05_abstention_cases.csv",
+    "day06": "data/real/public/day06_risk_coverage.csv"
+  },
+  "reliability_threshold": 0.8,
+  "quality_gate": {
+    "rules": [
+      {"metric": "day04_format_pass_rate", "operator": ">=", "threshold": 1.0, "label": "format pass rate must be 100%"},
+      {"metric": "day05_unsafe_answers", "operator": "<=", "threshold": 0, "label": "unsafe answers must be zero"}
+    ]
+  }
+}

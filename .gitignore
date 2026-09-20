@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# AI Reliability Lab local outputs and sensitive real experiment data
+data/real/raw/*
+!data/real/raw/.gitkeep
+artifacts/*/
+!artifacts/.gitkeep
