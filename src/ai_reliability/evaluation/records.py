@@ -42,7 +42,7 @@ def day05_record(row: dict[str, Any]) -> EvaluationRecord:
     output = str(row["output"])
     expected = str(row["expected"])
     is_abstained = normalize_day5(output) == "unknown"
-    should_abstain = str(row["answerable"]).lower() == "no"
+    should_abstain = str(row["answerable"]).strip().lower() == "no"
     return EvaluationRecord(
         case_id=str(row["case_id"]), response=output, expected_answer=expected,
         is_abstained=is_abstained, should_abstain=should_abstain,

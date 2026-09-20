@@ -25,7 +25,12 @@ def _load_day_records(repo_root: Path, mode: str, config: dict[str, Any], run_id
         if day == "day01":
             rows = read_jsonl(path)
             outputs = config.get("day01_mock_outputs", {})
-            records[day] = [day01_record(row, str(outputs.get(row["id"], "")), run_id) for row in rows]
+            records[day] = []
+            for row in rows:
+                question_id = row["id"]
+                if question_id not in outputs:
+                    raise ValueError(f"Missing Day 1 mock output for question id: {question_id}")
+                records[day].append(day01_record(row, str(outputs[question_id]), run_id))
         elif day == "day02":
             records[day] = [day02_record(row, run_id) for row in read_csv(path)]
         elif day == "day03":

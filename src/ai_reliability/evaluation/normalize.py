@@ -2,12 +2,17 @@
 
 import re
 
-_DAY2_PUNCTUATION = "，。！？、；：,.!?;:-•*#"
+_DAY2_PUNCTUATION = "，。！？、；：,.!?;:-•*#`"
 
 
 def normalize_day1(text: str) -> str:
-    """Day 1/Day 3 behavior: strip and collapse whitespace only."""
+    """Day 1 behavior: strip and collapse whitespace only."""
     return " ".join(str(text).strip().split())
+
+
+def normalize_day3(text: str) -> str:
+    """Day 3 behavior: lowercase, strip, and collapse whitespace."""
+    return " ".join(str(text).lower().strip().split())
 
 
 def normalize_day2(text: str) -> str:

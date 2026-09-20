@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-from ai_reliability.evaluation.normalize import exact_match, normalize_day1
+from ai_reliability.evaluation.normalize import exact_match, normalize_day3
 from ai_reliability.schemas import EvaluationRecord, MetricResult
 
 
@@ -24,8 +24,9 @@ def evaluate_reliability_matrix(records: list[EvaluationRecord], threshold: floa
         groups[record.question_id or record.case_id].append(record)
     per_case: list[dict[str, object]] = []
     for question_id, group in groups.items():
-        accuracy = sum(exact_match(r.response, r.expected_answer or "", normalize_day1) for r in group) / len(group) if group else 0.0
-        normalized = [normalize_day1(r.response) for r in group]
+        expected = group[0].expected_answer or "" if group else ""
+        accuracy = sum(exact_match(r.response, expected, normalize_day3) for r in group) / len(group) if group else 0.0
+        normalized = [normalize_day3(r.response) for r in group]
         counts = {value: normalized.count(value) for value in set(normalized)}
         consistency = max(counts.values()) / len(normalized) if normalized else 0.0
         per_case.append({"question_id": question_id, "accuracy": accuracy, "consistency": consistency, "quadrant": quadrant(accuracy, consistency, threshold)})

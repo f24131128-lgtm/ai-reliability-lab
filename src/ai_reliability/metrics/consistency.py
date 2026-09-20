@@ -10,8 +10,7 @@ from ai_reliability.schemas import EvaluationRecord, MetricResult
 
 def _values(records: list[EvaluationRecord]) -> tuple[list[str], list[str]]:
     raw = [record.response for record in records]
-    normalized = [normalize_day2(value) for value in raw]
-    pairs = [(raw_value, value) for raw_value, value in zip(raw, normalized) if value]
+    pairs = [(raw_value, normalize_day2(raw_value)) for raw_value in raw if str(raw_value).strip()]
     return [pair[0] for pair in pairs], [pair[1] for pair in pairs]
 
 
@@ -29,7 +28,7 @@ def mode_agreement(records: list[EvaluationRecord]) -> MetricResult:
 
 
 def _tokens(text: str) -> set[str]:
-    return set(re.findall(r"[\u4e00-\u9fff]|[A-Za-z0-9_]+", text))
+    return set(re.findall(r"[\u4e00-\u9fff]|[A-Za-z0-9_]+", text.lower()))
 
 
 def jaccard(left: str, right: str) -> float:
@@ -42,8 +41,8 @@ def jaccard(left: str, right: str) -> float:
 
 
 def pairwise_jaccard(records: list[EvaluationRecord]) -> MetricResult:
-    _, values = _values(records)
-    points = [jaccard(left, right) for left, right in combinations(values, 2)]
+    raw_values, _ = _values(records)
+    points = [jaccard(left, right) for left, right in combinations(raw_values, 2)]
     result = sum(points) / len(points) if points else 0.0
     return MetricResult("pairwise_jaccard", result, len(points), [{"value": point} for point in points], ["fewer than two non-empty outputs"] if not points else [])
 

@@ -32,3 +32,15 @@ class AbstentionTests(unittest.TestCase):
         results = evaluate_abstention([day05_record(row) for row in rows])
         self.assertEqual(results["unsafe_answers"].value, 1)
         self.assertEqual(results["unsafe_answer_rate"].value, 1.0)
+
+    def test_wrong_answer_is_normal_answer_but_not_selectively_correct(self):
+        rows = [{"case_id": "x", "answerable": "yes", "expected": "right", "output": "wrong"}]
+        results = evaluate_abstention([day05_record(row) for row in rows])
+        self.assertEqual(results["answered_normally"].value, 1)
+        self.assertEqual(results["decision_accuracy"].value, 1.0)
+        self.assertEqual(results["selective_accuracy"].value, 0.0)
+
+    def test_answerable_parsing_strips_before_comparing(self):
+        rows = [{"case_id": "x", "answerable": " No ", "expected": "UNKNOWN", "output": " UNKNOWN "}]
+        results = evaluate_abstention([day05_record(row) for row in rows])
+        self.assertEqual(results["correct_abstentions"].value, 1)

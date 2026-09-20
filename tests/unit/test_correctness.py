@@ -5,6 +5,7 @@ from pathlib import Path
 from ai_reliability.evaluation.records import day01_record
 from ai_reliability.io import read_jsonl
 from ai_reliability.metrics.correctness import evaluate_exact_match
+from ai_reliability.runner import _load_day_records
 
 
 class CorrectnessTests(unittest.TestCase):
@@ -20,3 +21,12 @@ class CorrectnessTests(unittest.TestCase):
         result = evaluate_exact_match([])
         self.assertEqual(result.value, 0.0)
         self.assertTrue(result.warnings)
+
+    def test_missing_day1_mock_output_fails_fast(self):
+        with self.assertRaisesRegex(ValueError, "Missing Day 1 mock output.*Q001"):
+            _load_day_records(
+                Path(".").resolve(),
+                "demo",
+                {"dataset": {"day01": "data/demo/day01_questions.jsonl"}, "day01_mock_outputs": {}},
+                "test-run",
+            )

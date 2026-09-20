@@ -20,6 +20,26 @@ class ConsistencyTests(unittest.TestCase):
         self.assertEqual(result.denominator, 1)
         self.assertEqual(result.value, 1.0)
 
+    def test_punctuation_only_output_is_not_raw_empty(self):
+        records = [
+            day02_record({"run_id": "1", "output": "!!!"}, "test"),
+            day02_record({"run_id": "2", "output": "!!!"}, "test"),
+        ]
+        results = evaluate_consistency(records)
+        self.assertEqual(results["unique_ratio"].denominator, 2)
+        self.assertEqual(results["unique_ratio"].value, 0.5)
+        self.assertEqual(results["mode_agreement"].denominator, 2)
+        self.assertEqual(results["mode_agreement"].value, 1.0)
+
+    def test_pairwise_jaccard_uses_raw_outputs_before_normalization(self):
+        records = [
+            day02_record({"run_id": "1", "output": "foo-bar"}, "test"),
+            day02_record({"run_id": "2", "output": "foo baz"}, "test"),
+        ]
+        result = evaluate_consistency(records)["pairwise_jaccard"]
+        self.assertEqual(result.denominator, 1)
+        self.assertAlmostEqual(result.value, 1 / 3)
+
     def test_jaccard_empty_edge_cases(self):
         self.assertEqual(jaccard("", ""), 1.0)
         self.assertEqual(jaccard("", "answer"), 0.0)
